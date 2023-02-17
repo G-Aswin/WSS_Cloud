@@ -44,8 +44,16 @@ class MyRedis:
     print(obj)
     if obj[0] == b'0-0':
       return (None, None)
-    
     file_id, dic = obj[1][0]
     filename = dic[b'fname']
     print(filename)
     return (filename, file_id)
+  
+  def pending_tasks(self):
+    op = self.rds.xpending(IN, Worker.GROUP)
+    print(op)
+    return op
+  
+  def update_words_transaction(self, lualist, file_id):
+    op = self.rds.fcall('update_word_count', 4, COUNT, word, IN, Worker.GROUP, count, file_id)
+    # print("TRANSACTION : ", op)
